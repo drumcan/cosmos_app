@@ -1,0 +1,46 @@
+<div class="row">
+	<aside class="span8">
+		<section>
+		  <h1>
+		  	<div>Name: <%= @user.name %></div>
+		  </h1>
+          <p>
+	        <div>E-mail: <%= @user.email %></div>
+	        <div>Payment Token: <%= @user.payment_token %></div>
+					<div>Card Type: <%= @user.cart_type %></div>
+					<div>First Six: <%= @user.first_six %></div>
+					<div>Last Four: <%= @user.last_four %></div>
+	      </p>
+				<h2>
+					<div>Balance: <%= @user.balance %></div>
+				</h2>
+
+				<%= form_for @transaction, :html => {:class => "form-horizontal center" } do |f| %>
+				  <%= render 'shared/error_messages', object: f.object %>
+
+					<%= f.submit "Add $10", class: "btn btn-large btn-primary" %>
+			 <% end %>
+				<br>
+			  </b>
+
+
+			<table>
+          <tr>
+          	<th>Transaction Id</th>
+            <th>Amount</th>
+						<th>Status</th>
+						<th>Order Id</th>
+
+          </tr>
+       <% @transactions.each do |transaction| %>
+          <tr>
+      	  	<td><%= transaction.transaction_id %></td>
+            <td><%= transaction.amount %></td>
+				  	<td><%= transaction.status %></td>
+			 			<td><%= transaction.order_id %></td>
+          </tr>
+        <% end %>
+      </table>
+	  </section>
+	</aside>
+</div>
