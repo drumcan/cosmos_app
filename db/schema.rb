@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170109184126) do
+ActiveRecord::Schema.define(version: 20170110173029) do
 
   create_table "transactions", force: true do |t|
     t.string   "transaction_id"
-    t.string   "user_id"
+    t.integer  "user_id",        limit: 255
     t.string   "status"
     t.string   "amount"
     t.string   "order_id"
