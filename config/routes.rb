@@ -2,15 +2,17 @@ CosmosApp::Application.routes.draw do
 
 
    root 'welcome#index'
-   match '/signup',  to: 'users#new',                via: 'get'
-   match '/signin',  to: 'sessions#new',             via: 'get'
-   match '/show',    to: 'user#show',                via: 'get'
-   match '/signout', to: 'sessions#destroy',         via: 'delete'
-   match '/transactions', to: 'users#transactions', via: 'post'
+   match '/signup',       to: 'users#new',                via: 'get'
+   match '/signin',       to: 'sessions#new',             via: 'get'
+   match '/show',         to: 'user#show',                via: 'get'
+   match '/signout',      to: 'sessions#destroy',         via: 'delete'
+   match '/transactions', to: 'users#transactions',       via: 'post'
+   match '/charges',      to: 'charges#new',       via: 'get'
 
 
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
+  resources :charges
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

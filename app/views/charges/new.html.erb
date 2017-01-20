@@ -1,0 +1,110 @@
+<div class="container">
+  <%= form_for @charge, :html => {:class => "form-horizontal center" } do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+
+  <label>Card Number: </label>
+    <select id="card_number">
+      <option value="4111111111111111">Success Visa: 4111111111111111</option>
+      <option value="6011111111111117">Success Discover: 6011111111111117</option>
+      <option value="378282246310005">Success Amex: 378282246310005</option>
+      <option value="5555555555554444">Success Mastercard: 5555555555554444</option>
+      <option value="4111111111111111">Success Visa: 4111111111111111</option>
+      <option value="378734493671000">Unsuccessful Amex: 378282246310005</option>
+      <option value="6011000990139424">Unsuccessful Discover: 6011000990139424</option>
+      <option value="4000111111111115">Unsuccessful Visa: 4000111111111115</option>
+      <option value="5105105105105100">Unsuccessful Mastercard: 5105105105105100</option>
+    </select>
+    <br></br>
+    <select id="cvv">
+      <option value="123">Success Visa/Disc/MC: 123</option>
+      <option value="201">Not Verified Visa/Disc/MC: 201</option>
+      <option value="200">No Match Visa/Disc/MC: 200</option>
+      <option value="301">Does Not Particpate Visa/Disc/MC: 301</option>
+    </select>
+    <br></br>
+
+    <label>Exp Month: </label><input type="text"id="expiration_month" name="expiration_month" value="12">
+    <label>Exp Year: </label><input type="text" id="expiration_year" name="expiration_year" value="2020">
+
+
+    <input type="hidden" id="payment_method_token" name="payment_method_token" value="">
+    <br></br>
+    <%= f.submit "Add $10", class: "btn btn-large btn-primary" %>
+ <% end %>
+
+</div>
+
+<br></br>
+<% if @result != nil %>
+<table align="center">
+    <tr>
+      <th>Transaction Id</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>AVS Postal </th>
+      <th>AVS Street </th>
+      <th>CVV</th>
+      <th>Decline Reason </th>
+      <th>Hard Decline?</th>
+
+    </tr>
+    <tr>
+      <td><%= @result["data"]["id"] %></td>
+      <td><%= @result["data"]["amount"] %></td>
+      <td><%= @result["data"]["status"] %></td>
+      <td><%= @result["data"]["processor_response"]["avs_postal_code_response"] %></td>
+      <td><%= @result["data"]["processor_response"]["avs_street_address_response"] %></td>
+      <td><%= @result["data"]["processor_response"]["cvv_response"] %></td>
+      <td><%= @result["data"]["processor_response"]["decline_reason"] %></td>
+      <td><%= @result["data"]["processor_response"]["hard_decline"] %></td>
+    </tr>
+</table>
+<% end %>
+<div>
+
+<script>
+
+if (! ! '<%= @result %>') {
+
+result =  JSON.parse('<%= @result.to_json.html_safe %>');
+console.log(result);
+
+};
+
+$(document).ready(function(){
+  $("#new_charge").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: "https://payments.sandbox.braintree-api.com/tokens",
+      type: "POST",
+      beforeSend: function(xhr){
+              xhr.setRequestHeader("Content-Type","application/json");
+              xhr.setRequestHeader("Authorization", "Bearer sandbox_vsjb9n_gxcpcb_3cqr2f_hyf6np_4d7");
+              xhr.setRequestHeader("Braintree-Version","2016-10-07");
+      },
+      data: JSON.stringify( {
+        type: "credit_card",
+        number: document.getElementById('card_number').value,
+        cvv: document.getElementById('cvv').value,
+        expiration_month: document.getElementById('expiration_month').value,
+        expiration_year: document.getElementById('expiration_year').value
+      } ),
+      dataType: "json",
+      success: function(data, status){
+
+        document.getElementById("payment_method_token").value = data.data.id;
+        document.getElementById('card_number').value = "";
+        document.getElementById('cvv').value = "";
+        document.getElementById('expiration_month').value = "";
+        document.getElementById('expiration_year').value = "";
+        document.getElementById('new_charge').submit();
+
+    },
+    error: function (request, status, error) {
+      alert(request.responseText);
+    }
+  });
+  });
+
+});
+</script>

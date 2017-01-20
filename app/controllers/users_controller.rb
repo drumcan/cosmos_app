@@ -76,38 +76,6 @@ end
 
 private
 
-  def braintree_transaction_create(token, amount, order_id)
-    payload = {
-      :source => {
-        :type  => "credit_card",
-        :id => token
-      },
-      :amount => amount,
-      :order_id => order_id,
-      :currency => "USD"
-    }
-
-    action = "charges"
-    response = braintree_post(payload, action)
-    return response
-  end
-
-  def braintree_token_create(payment_method_token)
-    payload = {
-          :type => "credit_card",
-          :token_id => payment_method_token,
-          :verification => {
-            :amount => "1.00",
-            :currency => "USD",
-            :vault_on_failure => false
-          }
-    }
-
-    action = "payment-methods"
-    response = braintree_post(payload, action)
-    return response
-  end
-
   def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user)
