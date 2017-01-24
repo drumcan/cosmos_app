@@ -75,6 +75,11 @@ end
     end
   end
 
+  def hi
+  end
+
+
+
   def refund
     @user = current_user
     transaction_id = params[:transaction_id]
