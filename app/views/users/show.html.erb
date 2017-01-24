@@ -43,7 +43,9 @@
 								<td><%= transaction.status %></td>
 								<td><%= transaction.order_id %></td>
 								<td><%= transaction.refunded %></td>
+								<% if transaction.refunded != true && transaction.transaction_type == "charge" %>
 								<td><%= button_to "Refund", {:controller => "users", :action => "refund", "transaction_id" => transaction.transaction_id}, :method => :post  %></td>
+								<% end %>
 							</tr>
 						<% end %>
 					</table>
