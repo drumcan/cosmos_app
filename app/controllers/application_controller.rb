@@ -23,6 +23,22 @@ private
       return response
     end
 
+    def braintree_credit_create(transaction_id)
+      p transaction_id
+      payload = {
+        :source => {
+          :type => "charge",
+          :id => transaction_id
+        },
+        :amount => "10.00",
+        :currency => "USD"
+      }
+
+      action = "refunds"
+      response = braintree_post(payload, action)
+      return response
+    end
+
     def braintree_token_create(payment_method_token)
       payload = {
             :type => "credit_card",
@@ -40,6 +56,7 @@ private
     end
 
     def braintree_post(payload, action)
+
       payload = payload.to_json.to_s
        uri = URI.parse("https://payments.sandbox.braintree-api.com/#{action}")
        req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json', 'Authorization' => 'Bearer sandbox_jhktj9_mj8cfb_8wphf3_xm3r7m_jy4', 'Braintree-Version' => '2016-10-07'})
@@ -49,8 +66,8 @@ private
          resp.use_ssl = true
          resp.ssl_version = 'TLSv1_2'
          resp.verify_mode = OpenSSL::SSL::VERIFY_PEER
-         response = resp.start { |http| http.request(req) }
 
+         response = resp.start { |http| http.request(req) }
          return response = JSON.parse(response.body)
     end
 end

@@ -24,23 +24,30 @@
 			  </b>
 
 
-			<table>
-          <tr>
-          	<th>Transaction Id</th>
-            <th>Amount</th>
-						<th>Status</th>
-						<th>Order Id</th>
-
-          </tr>
-       <% @transactions.each do |transaction| %>
-          <tr>
-      	  	<td><%= transaction.transaction_id %></td>
-            <td><%= transaction.amount %></td>
-				  	<td><%= transaction.status %></td>
-			 			<td><%= transaction.order_id %></td>
-          </tr>
-        <% end %>
-      </table>
 	  </section>
+		<div>
+					<table>
+							<tr>
+								<th>Transaction Id</th>
+								<th>Type</th>
+								<th>Amount</th>
+								<th>Status</th>
+								<th>Order Id</th>
+								<th>Refunded?</th>
+							</tr>
+					 <% @transactions.each do |transaction| %>
+							<tr>
+								<td><%= transaction.transaction_id %></td>
+								<td><%= transaction.transaction_type %></td>
+								<td><%= transaction.amount %></td>
+								<td><%= transaction.status %></td>
+								<td><%= transaction.order_id %></td>
+								<td><%= transaction.refunded %></td>
+								<td><%= button_to "Refund", {:controller => "users", :action => "refund", "transaction_id" => transaction.transaction_id}, :method => :post  %></td>
+							</tr>
+						<% end %>
+					</table>
+		</div>
 	</aside>
+
 </div>

@@ -4,10 +4,11 @@ CosmosApp::Application.routes.draw do
    root 'welcome#index'
    match '/signup',       to: 'users#new',                via: 'get'
    match '/signin',       to: 'sessions#new',             via: 'get'
-   match '/show',         to: 'user#show',                via: 'get'
+   match '/show',         to: 'users#show',                via: 'get'
    match '/signout',      to: 'sessions#destroy',         via: 'delete'
    match '/transactions', to: 'users#transactions',       via: 'post'
-   match '/charges',      to: 'charges#new',       via: 'get'
+   match '/charges',      to: 'charges#new',              via: 'get'
+   match '/refund',       to: 'users#refund',              via: 'post'
 
 
   resources :users
