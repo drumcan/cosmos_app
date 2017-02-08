@@ -22,13 +22,14 @@
 			 <% end %>
 				<br>
 			  </b>
-
-
 	  </section>
+
 		<div>
+				<%= button_to "Refresh Transaction Statuses",{:controller => "users", :action => "refresh"}, :method => :post  %>
 					<table>
 							<tr>
 								<th>Transaction Id</th>
+								<th>Created At</th>
 								<th>Type</th>
 								<th>Amount</th>
 								<th>Status</th>
@@ -38,6 +39,7 @@
 					 <% @transactions.each do |transaction| %>
 							<tr>
 								<td><%= transaction.transaction_id %></td>
+								<td><%= transaction.created_at %></td>
 								<td><%= transaction.transaction_type %></td>
 								<td><%= transaction.amount %></td>
 								<td><%= transaction.status %></td>
