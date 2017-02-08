@@ -55,6 +55,23 @@ private
       return response
     end
 
+    def braintree_get_transaction(transaction_id)
+      action = "charges"
+      id = transaction_id
+      response = braintree_get(id, action)
+      p response
+      return response
+    end
+
+    def braintree_get_refund(transaction_id)
+      action = "refunds"
+      id = transaction_id
+      response = braintree_get(id, action)
+      p response
+      return response
+    end
+
+
     def braintree_post(payload, action)
 
       payload = payload.to_json.to_s
@@ -70,4 +87,17 @@ private
          response = resp.start { |http| http.request(req) }
          return response = JSON.parse(response.body)
     end
+
+    def braintree_get(id, action)
+        uri = URI.parse("https://payments.sandbox.braintree-api.com/#{action}/#{id}")
+        req = Net::HTTP::Get.new(uri.path, initheader = {'Content-Type' => 'application/json', 'Authorization' => 'Bearer sandbox_jhktj9_mj8cfb_8wphf3_xm3r7m_jy4', 'Braintree-Version' => '2016-10-07'})
+
+        resp = Net::HTTP.new(uri.host, uri.port)
+        resp.use_ssl = true
+        resp.ssl_version = 'TLSv1_2'
+        resp.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+        response = resp.start { |http| http.request(req) }
+        return response = JSON.parse(response.body)
+   end
 end

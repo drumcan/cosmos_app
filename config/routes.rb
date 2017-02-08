@@ -8,7 +8,8 @@ CosmosApp::Application.routes.draw do
    match '/signout',      to: 'sessions#destroy',         via: 'delete'
    match '/transactions', to: 'users#transactions',       via: 'post'
    match '/charges',      to: 'charges#new',              via: 'get'
-   match '/refund',       to: 'users#refund',              via: 'post'
+   match '/refund',       to: 'users#refund',             via: 'post'
+   match '/refresh',      to: 'users#refresh',            via: 'post'
 
 
   resources :users

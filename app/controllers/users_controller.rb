@@ -6,7 +6,7 @@ require 'openssl'
 require 'json'
 
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :transactions, :refund]
+  before_action :signed_in_user, only: [:index, :edit, :update, :destroy, :transactions, :refund, :refresh]
   before_action :correct_user, only: [:edit, :update]
 
   def new
@@ -41,12 +41,29 @@ end
     @user = User.find(params[:id])
     @transaction = Transaction.new
     @transactions = Transaction.where(user_id: @user.id).order(:created_at)
-    p @transaction
   end
+
 
   def current_user=(user)
     @current_user = user
   end
+
+  def refresh
+    @user = current_user
+    @transactions = Transaction.where(user_id: @user.id)
+    @transactions.each do |transaction|
+      if transaction.transaction_type == "charge"
+      result = braintree_get_transaction(transaction.transaction_id)
+      else
+        result = braintree_get_refund(transaction.transaction_id)
+      end
+      status = result["data"]["status"]
+      @orig_trans = Transaction.find_by transaction_id: transaction.transaction_id
+      @orig_trans.update_attribute(:status, status)
+    end
+    redirect_to @user
+  end
+
 
   def transactions
     @user = current_user
@@ -64,6 +81,7 @@ end
       @transaction.order_id = result["data"]["order_id"]
       @transaction.user_id = @user.id
       @transaction.transaction_type = "charge"
+      @transaction.refunded = false
       @transaction.save
 
       update_balance(@user, result)
@@ -75,18 +93,11 @@ end
     end
   end
 
-  def hi
-  end
-
-
-
   def refund
     @user = current_user
     transaction_id = params[:transaction_id]
 
-
     result = braintree_credit_create(transaction_id)
-    p result
 
     if result["data"]["status"] == "PENDING"
       @transaction = Transaction.new
@@ -99,11 +110,7 @@ end
       @transaction.save
 
       @orig_trans = Transaction.find_by transaction_id: params[:transaction_id]
-      p @orig_trans
       @orig_trans.update_attribute(:refunded, true)
-
-
-
       @user.update_attribute(:balance, (@user.balance.to_f - 10).to_s)
       redirect_to @user
     else
@@ -111,8 +118,6 @@ end
       redirect_to @user
     end
   end
-
-
 
 private
 
